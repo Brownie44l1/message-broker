@@ -77,17 +77,17 @@ func main() {
 		Subscription: make(map[string]map[string]bool),
 	}
 
-	router.AddTopic("orders")
-	router.AddTopic("logs")
+	_ = router.AddTopic("orders")
+	_ = router.AddTopic("logs")
 
-	router.AddSubscriber("api-1")
-	router.AddSubscriber("api-2")
+	_ = router.AddSubscriber("api-1")
+	_ = router.AddSubscriber("api-2")
 
-	router.Subscribe("api-1", "orders")
-	router.Subscribe("api-2", "logs")
+	_ = router.Subscribe("api-1", "orders")
+	_ = router.Subscribe("api-2", "logs")
 
 	topics := []string{"orders", "logs"}
-	router.Publish(topics, "testing")
+	_ = router.Publish(topics, "testing")
 
 	messages, _ := router.Consume("api-1")
 	for _, msg := range messages {
