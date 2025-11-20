@@ -90,10 +90,12 @@ func main() {
 	msg4, _ := broker.Consume("service-B", "orders")
 	fmt.Println("Service B:", msg4)
 
-	// Both should get "no new messages" error
 	msg5, err := broker.Consume("service-A", "orders")
-	fmt.Println(msg5)
-	fmt.Println("Service A caught up:", err)
+	if err != nil {
+		fmt.Println("Service A caught up:", err)
+	} else {
+		fmt.Println("Service A:", msg5)
+	}
 
 	msg6, _ := broker.Consume("error-log", "logs")
 	fmt.Println(msg6)
