@@ -30,7 +30,7 @@ func main() {
 	broker.publish("World")
 
 	msg, err := broker.consume()
-	
+
 	if err != nil {
 		fmt.Println("Error: ", err)
 	} else {
