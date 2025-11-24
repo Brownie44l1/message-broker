@@ -16,27 +16,22 @@ func main() {
 	var wg sync.WaitGroup
 	start := time.Now()
 
-	wg.Add(5)
-	go func () {
-		worker(1, 2*time.Millisecond)
-		wg.Done()
-	}()
-	go func () {
-		worker(2, 3*time.Millisecond)
-		wg.Done()
-	}()
-	go func () {
-		worker(3, 1*time.Millisecond)
-		wg.Done()
-	}()
-	go func () {
-		worker(4, 3*time.Millisecond)
-		wg.Done()
-	}()
-	go func () {
-		worker(5, 1*time.Millisecond)
-		wg.Done()
-	}()
+	durations := []time.Duration{
+		2 * time.Millisecond,
+		3 * time.Millisecond,
+		1 * time.Millisecond,
+		3 * time.Millisecond,
+		1 * time.Millisecond,
+	}
+
+	for i, duration := range durations {
+		wg.Add(1)
+
+		go func(workerID int, sleepDuration time.Duration)  {
+			defer wg.Done()
+			worker(workerID, sleepDuration)
+		}(i+1, duration)
+	}
 
 	wg.Wait()
 	elapsed := time.Since(start)
