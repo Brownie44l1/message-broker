@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 type Number struct {
 	Original int
@@ -15,11 +18,24 @@ func generator(out chan<- Number) {
 }
 
 func processor(in <-chan Number, out chan<- Number) {
-	for n := range in {
-		n.Squared = n.Original * n.Original
-		out <- n
+	var wg sync.WaitGroup
+	numWorkers := 3
+
+	wg.Add(numWorkers)
+	for i := 0; i < numWorkers; i++ {
+		go func() {
+			for n := range in {
+				n.Squared = n.Original * n.Original
+				out <- n
+			}
+			wg.Done()
+		}()
 	}
-	close(out)
+
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
 }
 
 func printer(in <-chan Number, out chan<- Number) {
